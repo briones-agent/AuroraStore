@@ -14,6 +14,14 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        // Expo brownfield AAR from local Maven (~/.m2), scoped to its group so it
+        // can't shadow anything. Must be declared here (not the app module) because
+        // of RepositoriesMode.FAIL_ON_PROJECT_REPOS.
+        mavenLocal {
+            content {
+                includeGroup("com.aurora.store")
+            }
+        }
         google()
         mavenCentral()
         // libsu is only available via jitpack

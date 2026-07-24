@@ -59,8 +59,10 @@ configure<ApplicationExtension> {
 
     defaultConfig {
         applicationId = "com.aurora.store"
+        // Bumped 23 -> 24: React Native's floor for the Expo brownfield AAR
+        // (manifest merge fails below 24).
         minSdk {
-            version = release(23)
+            version = release(24)
         }
         targetSdk {
             version = release(37)
@@ -188,6 +190,11 @@ ktlint {
 }
 
 dependencies {
+
+    // Expo brownfield: fused React Native AAR (JS bundle embedded, no Metro).
+    // Built via `npx expo-brownfield build:android --release --fused` in
+    // ./expo-app and published to local Maven. Launched from ExpoActivity.
+    implementation("com.aurora.store:aurorabrownfield-fused-release:1.0.0")
 
     // Google's Goodies
     implementation(libs.google.android.material)

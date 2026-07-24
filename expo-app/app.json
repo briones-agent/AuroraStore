@@ -33,7 +33,19 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
-      ]
+      ],
+      [
+        "expo-brownfield",
+        {
+          "android": {
+            "libraryName": "aurorabrownfield",
+            "group": "com.aurora.store",
+            "package": "com.aurora.store.brownfield",
+            "version": "1.0.0"
+          }
+        }
+      ],
+      "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true,

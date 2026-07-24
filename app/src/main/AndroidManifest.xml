@@ -105,6 +105,13 @@
             </intent-filter>
         </activity>
 
+        <!-- Expo brownfield: hosts the React Native screen from the Expo AAR -->
+        <activity
+            android:name=".ExpoActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" />
+
         <!-- Confirmation gate for external app-listing deep links (market:// & play.google.com) -->
         <activity
             android:name=".DeepLinkConfirmActivity"
