@@ -1,3 +1,54 @@
+# Aurora Store + React Native
+
+Experimental fork of [Aurora Store](https://github.com/whyorean/AuroraStore)
+testing brownfield support for existing Android codebases. The commits on this
+fork serve as a reference for integrating React Native (via Expo) into an
+existing native app without refactoring the project structure.
+
+Uses Expo's brownfield **isolated** approach: the React Native + Expo code is
+built into a prebuilt **AAR** and consumed by the native app like any other
+Maven dependency. A floating "Expo" button overlaid on Aurora Store's Jetpack
+Compose UI launches an `ExpoActivity` that renders the React Native screen (JS
+bundle embedded in the release AAR, so no Metro is needed at runtime).
+
+## Integration steps
+
+1. **Create the Expo app** (in `./expo-app`):
+   ```sh
+   npx create-expo-app@latest expo-app --template default@canary
+   ```
+2. **Install expo-brownfield** and generate the AAR:
+   ```sh
+   cd expo-app
+   npx expo install expo-brownfield expo-build-properties
+   npx expo prebuild -p android --clean
+   npx expo-brownfield build:android --release --fused --verbose
+   ```
+   The fused release AAR is published to the local Maven repo (`~/.m2`) as
+   `com.aurora.store:aurorabrownfield-fused-release`.
+3. **Consume the AAR from the Android host** (`app/build.gradle.kts` +
+   `settings.gradle.kts`) and launch it from `ExpoActivity`. Build the enabled
+   flavor: `assembleVanillaDebug`.
+
+### Notes for reproducing the build
+
+- **JDK 21** — Aurora Store uses a Java 21 toolchain, so build with a JDK 21
+  (not 17). Gradle can auto-provision it.
+- **`minSdk` 23 → 24** — React Native's floor; the manifest merge fails below 24.
+- **`mavenLocal()` in `settings.gradle.kts`** — Aurora sets
+  `RepositoriesMode.FAIL_ON_PROJECT_REPOS`, so the brownfield repo must be
+  declared at the settings level, scoped to the `com.aurora.store` group.
+- **`reactNativeArchitectures=arm64-v8a`** — pinned to keep the AAR small.
+
+No androidsvg/duplicate-class or `maxSdkVersion` manifest conflict here (Aurora
+uses Coil without the SVG decoder, and declares no `maxSdkVersion` on the
+storage permissions).
+
+---
+
+<details>
+<summary>Aurora Store (original README)</summary>
+
 # Aurora Store
 
 Aurora Store enables you to search and download apps from the official Google Play store. You can check app descriptions, screenshots, updates, reviews, and download the APK directly from Google Play to your device. 
@@ -116,3 +167,6 @@ Aurora Store is based on these projects
 - [AppCrawler](https://github.com/Akdeniz/google-play-crawler)
 - [Raccoon](https://github.com/onyxbits/raccoon4)
 - [SAI](https://github.com/Aefyr/SAI)
+
+
+</details>
